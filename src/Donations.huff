@@ -13,9 +13,7 @@
 
     dup1 __FUNC_SIG(donated) eq donatedJump jumpi
 
-    0x00 callvalue gt receiveJump jumpi
-
-    returndatasize dup1 revert
+    receiveJump jump
 
     donatedJump:
       DONATED()
@@ -37,8 +35,10 @@
     caller        // [msg.sender]
     
     GET_SLOT()    // [slot]
-    dup1 sload    // [old_donated, slot]
-    callvalue add // [updated_donated, slot]
+    dup1          // [slot, slot]
+    sload         // [old_donated, slot]
+    callvalue     // [callvalue, old_donated, slot]
+    add           // [updated_donated, slot]
     swap1         // [slot, updated_donated]
     sstore        // []
 
