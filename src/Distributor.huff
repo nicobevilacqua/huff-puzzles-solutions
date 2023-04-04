@@ -10,9 +10,59 @@
  *  NOTICE: The contract should revert when an unrecognized function is called
  */
 
- #define function distribute(address[]) payable returns()
+#define function distribute(address[]) payable returns()
 
+#define macro MAIN() = takes(0) returns(0) {
 
- #define macro MAIN() = takes(0) returns(0) {
-   
- }
+    returndatasize calldataload 0xe0 shr // [func selector]
+    
+    dup1 __FUNC_SIG(distribute) eq distributeJump jumpi
+
+    returndatasize dup1 revert
+
+    distributeJump:
+      DISTRIBUTE()
+
+    returndatasize dup1 revert   
+}
+
+#define macro DISTRIBUTE() = takes(0) returns(0) {
+    0x24 calldataload   // [length]
+
+    dup1 returndatasize eq finish jumpi // array.length == 0 => return
+
+    dup1                // [length, length]
+    callvalue           // [callvalue, length, length]
+    div                 // [amount, length]
+    0x44                // [start, amount, length]
+    returndatasize      // [i, start, amount, length]
+
+    loop:
+        dup2 dup2 0x20 mul add calldataload   // [to, i, start, amount, length]
+        dup4 SEND()                           // [i, start, amount, length]
+        0x01 add                              // [updated_i, start, amount, length]
+        dup1 dup5 eq finish jumpi
+        loop jump
+        
+    finish:
+      returndatasize dup1 return
+}
+
+#define macro SEND() = takes(2) returns(0) {
+    // input:  [amount, to]
+    // output: []
+    returndatasize        // [0x00, amount, to]
+    dup1                  // [0x00, 0x00, amount, to]
+    dup1                  // [0x00, 0x00, 0x00, amount, to]
+    swap3                 // [amount, 0x00, 0x00, 0x00, to]
+    dup2                  // [0x00, amount, 0x00, 0x00, 0x00, to]
+    swap5                 // [to, amount, 0x00, 0x00, 0x00, 0x00]
+    gas                   // [gas, to, amount, 0x00, 0x00, 0x00, 0x00]
+    call                  // [success]
+
+    0x00 lt success jumpi
+
+    returndatasize dup1 revert
+
+    success:
+}
