@@ -26,7 +26,7 @@
 #define constant LENGTH_SLOT = FREE_STORAGE_POINTER()
 
 #define macro MAIN() = takes(0) returns(0) {
-    
+
     returndatasize calldataload 0xe0 shr // [func selector]
 
     dup1 __FUNC_SIG(pushh) eq pushhImp jumpi
@@ -56,25 +56,84 @@
 }
 
 #define macro PUSHH() = takes(0) returns(0) {
+    GET_LENGTH()        // [length]
 
+    0x04 calldataload   // [value, length]
+    dup2                // [newIndex, value, length]
+    GET_SLOT()          // [slot, value, length]
+    sstore              // [length]
+    0x01 add            // [new_length]
+    returndatasize sstore
+
+    returndatasize dup1 return
 }
 
 #define macro POPP() = takes(0) returns(0) {
+    GET_LENGTH()                // [length]
+    dup1 0x00 eq error jumpi
 
+    0x01                        // [0x01, new_length]
+    sub                         // [new_length]
+
+    0x00 sstore                 // []
+
+    returndatasize dup1 return
+
+    error: 
+        ZERO_ARRAY_ERROR()
 }
 
 #define macro READ() = takes(0) returns(0) {
+    0x04 calldataload   // [index]
+    GET_LENGTH()        // [length, index]
+    dup2                // [index, length, index]
 
+    lt continue jumpi 
+
+    OUT_OF_BOUNDS_ERROR()
+
+    continue:           // [index]
+        GET_SLOT()      // [slot]
+        sload           // [value]
+        returndatasize
+        mstore          // []
+        0x20 returndatasize return
 }
 
-#define macro LENGTH() = takes(0) returns(0) {
-    returndatasize sload
-    returndatasize mload
+#define macro LENGTH() = takes(0) returns(0) {    
+    GET_LENGTH() 
+    returndatasize mstore
     0x20 returndatasize return
 }
 
 #define macro WRITE() = takes(0) returns(0) {
+    0x04 calldataload   // [index]
+    GET_LENGTH()        // [length, index]
+    dup2                // [index, length, index]
 
+    lt continue jumpi 
+
+    OUT_OF_BOUNDS_ERROR()
+
+    continue:           // [index]
+        0x24 calldataload   
+        swap1
+        sstore
+      
+        returndatasize dup1 return
+}
+
+#define macro GET_SLOT() = takes(1) returns(1) {
+    // input:  [index]
+    // output: [slot]
+    returndatasize mstore
+    0x20 returndatasize sha3
+}
+
+#define macro GET_LENGTH() = takes(0) returns(1) {
+    // input:   []
+    // output:  [length]
+    returndatasize sload
 }
 
 #define macro OUT_OF_BOUNDS_ERROR() = takes(0) returns(0) {

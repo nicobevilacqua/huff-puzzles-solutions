@@ -9,9 +9,30 @@
  *  NOTICE: The contract should revert when an unrecognized function is called
  */
 
- #define function makeContract() payable returns(address)
+#define function makeContract() payable returns(address)
 
-
- #define macro MAIN() = takes(0) returns(0) {
+#define macro MAIN() = takes(0) returns(0) {
+    returndatasize calldataload 0xe0 shr // [func selector]
     
- }
+    dup1 __FUNC_SIG(makeContract) eq makeContractJump jumpi
+
+    returndatasize dup1 revert
+
+    makeContractJump:
+      MAKE_CONTRACT()
+
+    returndatasize dup1 revert
+}
+
+#define macro MAKE_CONTRACT() = takes(0) returns(0) {
+    0x620caffe3d5260203df3     // [code]
+    returndatasize mstore   //  []
+    
+    0x0a                    // [0x0a]
+    returndatasize          // [offset, size]
+    dup1                    // [ether, offset, size]
+    create                  // [address]
+
+    returndatasize mstore
+    0x20 returndatasize return
+}
