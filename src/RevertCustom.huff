@@ -14,5 +14,6 @@
 #define error OnlyHuff()
 
 #define macro MAIN() = takes(0) returns(0) {
-    
+    __ERROR(OnlyHuff) returndatasize mstore
+    0x04 returndatasize revert
 }

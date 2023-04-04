@@ -1,4 +1,3 @@
-
 /** 
  *  SUM_ARRAY HUFF EXERCISE
  *
@@ -15,15 +14,75 @@
  *  NOTICE: The contract should revert when an unrecognized function is called
  */
 
- #define function pushh(uint256 num) payable returns()
- #define function popp() payable returns()
- #define function read(uint256 index) payable returns(uint256)
- #define function length() payable returns(uint256)
- #define function write(uint256 index, uint256 num) payable returns()
+#define function pushh(uint256 num) payable returns()
+#define function popp() payable returns()
+#define function read(uint256 index) payable returns(uint256)
+#define function length() payable returns(uint256)
+#define function write(uint256 index, uint256 num) payable returns()
 
- #define error OutOfBounds()
- #define error ZeroArray()
+#define error OutOfBounds()
+#define error ZeroArray()
 
- #define macro MAIN() = takes(0) returns(0) {
+#define constant LENGTH_SLOT = FREE_STORAGE_POINTER()
+
+#define macro MAIN() = takes(0) returns(0) {
     
- }
+    returndatasize calldataload 0xe0 shr // [func selector]
+
+    dup1 __FUNC_SIG(pushh) eq pushhImp jumpi
+    dup1 __FUNC_SIG(popp) eq poppImp jumpi
+    dup1 __FUNC_SIG(read) eq readImp jumpi
+    dup1 __FUNC_SIG(length) eq lengthImp jumpi
+    dup1 __FUNC_SIG(write) eq writeImp jumpi
+
+    returndatasize dup1 revert
+
+    pushhImp:
+      PUSHH()
+    
+    poppImp:
+      POPP()
+
+    readImp:
+      READ()
+
+    lengthImp:
+      LENGTH()
+
+    writeImp:
+      WRITE()
+
+    returndatasize dup1 revert
+}
+
+#define macro PUSHH() = takes(0) returns(0) {
+
+}
+
+#define macro POPP() = takes(0) returns(0) {
+
+}
+
+#define macro READ() = takes(0) returns(0) {
+
+}
+
+#define macro LENGTH() = takes(0) returns(0) {
+    returndatasize sload
+    returndatasize mload
+    0x20 returndatasize return
+}
+
+#define macro WRITE() = takes(0) returns(0) {
+
+}
+
+#define macro OUT_OF_BOUNDS_ERROR() = takes(0) returns(0) {
+    __ERROR(OutOfBounds) returndatasize mstore
+    0x04 returndatasize revert
+}
+
+#define macro ZERO_ARRAY_ERROR() = takes(0) returns(0) {
+    __ERROR(ZeroArray) returndatasize mstore
+    0x04 returndatasize revert 
+}

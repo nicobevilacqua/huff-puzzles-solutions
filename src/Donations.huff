@@ -9,4 +9,47 @@
 
 #define macro MAIN() = takes(0) returns(0) {
     
+    returndatasize calldataload 0xe0 shr // [func selector]
+
+    dup1 __FUNC_SIG(donated) eq donatedJump jumpi
+
+    0x00 callvalue gt receiveJump jumpi
+
+    returndatasize dup1 revert
+
+    donatedJump:
+      DONATED()
+
+    receiveJump:
+      RECEIVE()
+
+    returndatasize dup1 revert
+}
+
+#define macro GET_SLOT() = takes(1) returns(1) {
+    // input:  [msg.sender]
+    // output: [slot]
+    returndatasize mstore
+    0x20 returndatasize sha3
+}
+
+#define macro RECEIVE() = takes(0) returns(0) {
+    caller        // [msg.sender]
+    GET_SLOT()    // [slot]
+    dup1 sload    // [old_donated, slot]
+    callvalue add // [updated_donated, slot]
+    swap1         // [slot, updated_donated]
+    sstore        // []
+
+    returndatasize dup1 return
+}
+
+#define macro DONATED() = takes(0) returns(0) {
+    0x04 calldataload  // [address]
+
+    GET_SLOT()         // [slot]
+    sload              // [donated]
+    returndatasize mstore
+
+    0x20 returndatasize return
 }

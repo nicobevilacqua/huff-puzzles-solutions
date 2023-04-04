@@ -13,4 +13,39 @@
 
 #define macro MAIN() = takes(0) returns(0) {
 
+    returndatasize calldataload 0xe0 shr // [func selector]
+
+    dup1 __FUNC_SIG(sumArray) eq sumArrayImp jumpi
+
+    returndatasize dup1 revert
+
+    sumArrayImp:
+      SUM_ARRAY()
+
+    returndatasize dup1 revert
+}
+
+#define macro SUM_ARRAY() = takes(0) returns(0) {
+    0x04 calldataload 0x04 add    // [offset]
+    dup1 calldataload             // [length, offset]
+
+    swap1 0x20 add                // [start, length]
+    
+    returndatasize returndatasize // [i, sum, start, length]
+
+    loop:                         // [i, sum, start, length]
+      dup4 dup2 eq success jumpi  // i == length => go to success and return sum
+
+      dup1 0x20 mul dup4 add      // [current_pos, i, sum, start, length]
+      calldataload                // [current_value, i, sum, start, length]
+      swap1 0x01 add              // [updated_i, current_value, sum, start, length]
+      swap2                       // [sum, current_value, updated_i, start, length]
+      add swap1                   // [updated_i, sum, start, length]
+      
+      loop jump
+      
+    success:
+      swap1 returndatasize mstore
+      0x20 returndatasize return
+
 }

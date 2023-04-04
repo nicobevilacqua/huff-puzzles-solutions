@@ -13,5 +13,13 @@
 
 
 #define macro MAIN() = takes(0) returns(0) {
+  0x00 calldataload 0xe0 shr // [func selector]
+  __FUNC_SIG(add1) eq implementation jumpi // go to function body
+  returndatasize dup1 revert // revert otherwise
 
+  implementation:
+    0x04 calldataload // get first parameter
+    0x01 add // add 1
+    returndatasize mstore // save in memory
+    0x20 returndatasize return // return
 }

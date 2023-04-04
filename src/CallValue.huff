@@ -9,5 +9,6 @@
 */
 
 #define macro MAIN() = takes(0) returns(0) {
-    
+    callvalue returndatasize mstore // save msg.value in memort
+    0x20 returndatasize return // return first 32 bytes in memory
 }
