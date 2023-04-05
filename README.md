@@ -21,6 +21,6 @@ A series of puzzles that go from very easy to more difficult so that you can hav
 - [x] [BasicBank](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/BasicBank.huff)
 - [x] [SimulateArray](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/SimulateArray.huff)
 - [x] [Emitter](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/Emitter.huff)
-- [ ] [Create](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/Create.huff)
+- [x] [Create](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/Create.huff)
 - [x] [SendEther](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/SendEther.huff)
 - [x] [Distribute](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/Distributor.huff)
