@@ -70,12 +70,13 @@
 
 #define macro POPP() = takes(0) returns(0) {
     GET_LENGTH()                // [length]
-    dup1 0x00 eq error jumpi
+    dup1 returndatasize eq error jumpi
 
     0x01                        // [0x01, new_length]
+    swap1
     sub                         // [new_length]
 
-    0x00 sstore                 // []
+    returndatasize sstore                 // []
 
     returndatasize dup1 return
 
@@ -115,10 +116,11 @@
 
     OUT_OF_BOUNDS_ERROR()
 
-    continue:           // [index]
-        0x24 calldataload   
-        swap1
-        sstore
+    continue:               // [index]
+        0x24 calldataload   // [value, index]
+        swap1               // [index, value]
+        GET_SLOT()          // [slot, value]
+        sstore              // []
       
         returndatasize dup1 return
 }
