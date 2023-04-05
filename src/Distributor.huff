@@ -60,7 +60,7 @@
     gas                   // [gas, to, amount, 0x00, 0x00, 0x00, 0x00]
     call                  // [success]
 
-    0x00 lt success jumpi
+    returndatasize lt success jumpi
 
     returndatasize dup1 revert
 

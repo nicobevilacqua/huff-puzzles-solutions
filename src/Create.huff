@@ -27,14 +27,14 @@
 
 #define macro MAKE_CONTRACT() = takes(0) returns(0) {
     0x63FFFFFFFF6000526004601CF3
-    0x00
+    returndatasize
     mstore
 
     0x0D
-    0x00
+    returndatasize
     dup1
     create
 
-    0x00 mstore
-    0x20 0x00 return
+    returndatasize mstore
+    0x20 returndatasize return
 }
