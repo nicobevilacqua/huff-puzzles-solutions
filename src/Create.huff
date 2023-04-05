@@ -26,13 +26,13 @@
 }
 
 #define macro MAKE_CONTRACT() = takes(0) returns(0) {
-    0x63FFFFFFFF6000526004601CF3
+    0x600a8060093d393df3620caffe3d5260203df3 // creation code should return bytecode
     returndatasize
     mstore
 
-    0x0D
+    0x13
+    0x0d
     returndatasize
-    dup1
     create
 
     returndatasize mstore
