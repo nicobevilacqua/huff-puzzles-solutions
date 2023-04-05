@@ -1,5 +1,7 @@
 # huff-puzzles by [RareSkills](https://www.rareskills.io)
 
+A series of puzzles that go from very easy to more difficult so that you can have a hands-on introduction to the huff language and learn EVM bytecode while doing it.
+
 ## Solved
 
 - [x] [CallValue](https://github.com/nicobevilacqua/huff-puzzles-solutions/blob/main/src/CallValue.huff)
