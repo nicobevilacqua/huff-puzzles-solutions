@@ -12,6 +12,7 @@
 #define function makeContract() payable returns(address)
 
 #define macro MAIN() = takes(0) returns(0) {
+
     returndatasize calldataload 0xe0 shr // [func selector]
     
     dup1 __FUNC_SIG(makeContract) eq makeContractJump jumpi
@@ -25,14 +26,15 @@
 }
 
 #define macro MAKE_CONTRACT() = takes(0) returns(0) {
-    0x620caffe3d5260203df3     // [code]
-    returndatasize mstore   //  []
-    
-    0x0a                    // [0x0a]
-    returndatasize          // [offset, size]
-    dup1                    // [ether, offset, size]
-    create                  // [address]
+    0x63FFFFFFFF6000526004601CF3
+    0x00
+    mstore
 
-    returndatasize mstore
-    0x20 returndatasize return
+    0x0D
+    0x00
+    dup1
+    create
+
+    0x00 mstore
+    0x20 0x00 return
 }
