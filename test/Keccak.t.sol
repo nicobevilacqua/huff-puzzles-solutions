@@ -17,9 +17,6 @@ contract KeccakTest is Test, NonMatchingSelectorHelper {
         bytes memory data = hex"abcd";
         bytes32 expectedHash = keccak256(abi.encode(data));
 
-        console.log("data");
-        console.logBytes(abi.encode(data));
-
         (bool success, bytes memory res) = keccak.call(abi.encode(data));
 
         require(success, "call failed");
